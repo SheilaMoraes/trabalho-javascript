@@ -1,38 +1,35 @@
 name: Pipeline CI/CD
 
 on:
-push:
-branches:
-- main
-
-workflow_dispatch:
-
-schedule:
-- cron: '0 12 * * 1'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * 1'
 
 jobs:
-test:
-runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
 
-steps:
-  - name: Checkout do código
-    uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-  - name: Configurar Node.js
-    uses: actions/setup-node@v4
-    with:
-      node-version: '20'
+      - name: Instalar dependencias
+        run: npm install
 
-  - name: Instalar dependências
-    run: npm install
+      - name: Executar testes
+        run: npm test
 
-  - name: Executar testes
-    run: npm test
-
-  - name: Salvar relatório
-    uses: actions/upload-artifact@v4
-    with:
-      name: relatorio-testes
-      path: .
+      - name: Salvar relatorio
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-testes
+          path: .
 
